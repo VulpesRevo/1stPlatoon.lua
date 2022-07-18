@@ -1,6 +1,6 @@
 script_name('Script for personnel of the First platoon')
 script_author("Vulpes_Inculta - https://vk.com/volkodavpizdec")
-local V = 1.0
+local V = 1.1
 
 local ev = require 'samp.events'
 local inicfg = require 'inicfg'
