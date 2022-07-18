@@ -48,7 +48,7 @@ function onScriptTerminate(s, bool)
 end
 
 function checkupdate()
-	local responsetext = req('https://script.google.com/macros/s/AKfycbwa7oHfcccheNS3KnSHpnPEttNcIE-bWPrI3AXkt_Tzx_GOG9w/exec?do=checkupdate')
+		local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=checkupdate')
 		local re0 = regex.new("Version: (.*)\\; URL: (.*)\\; Info: (.*)@@.@") --
 		local ver, url, inf = re0:match(responsetext)
 		if ver == nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Не удалось получить информацию для обновления", 0xFF008B8B) thisScript():unload() return end
@@ -58,7 +58,7 @@ end
 function updatescript(url, ver)
 	local u = url
 	if u == nil then
-			local responsetext = req('https://script.google.com/macros/s/AKfycbwa7oHfcccheNS3KnSHpnPEttNcIE-bWPrI3AXkt_Tzx_GOG9w/exec?do=checkupdate')
+			local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=checkupdate')
 			local re0 = regex.new("Version: (.*)\\; URL: (.*)\\; Info: (.*)@@.@") --
 			local ver, url2, inf = re0:match(responsetext)
 			if ver == nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Не удалось получить информацию для обновления", 0xFF008B8B) thisScript():unload() return end
@@ -90,7 +90,7 @@ function checkaccess()
 		
 		local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
 		local f, s = mynick:match("(.*)%_(.*)")
-		local responsetext = req('https://script.google.com/macros/s/AKfycbyNJd5YdP72_80-OByfihBo74BWl8kJign3SRJEsFn_8At411w/exec?do=checkaccess&nick=' .. mynick .. '')
+		local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=checkaccess&nick=' .. mynick .. '')
 		local re1 = regex.new("@@.@ Access allowed @@..@.@") --
 		if re1:match(responsetext) == nil then
 			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Ошибка! Иди нахуй отсюда!", 0xFF008B8B)
@@ -124,7 +124,7 @@ function cmd_login(sparams)
 		local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
 		local f, s = mynick:match("(.*)%_(.*)")
 		sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Проверка пароля запущена...", 0xFF008B8B)
-		local responsetext = req('https://script.google.com/macros/s/AKfycbyNJd5YdP72_80-OByfihBo74BWl8kJign3SRJEsFn_8At411w/exec?do=checkpassword&nick=' .. mynick .. '&password=' .. password .. '')
+		local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=checkpassword&nick=' .. mynick .. '&password=' .. password .. '')
 		local re1 = regex.new("@@.@ No access for this @@..@.@") --
 		local re2 = regex.new("@@.@ No password @@..@.@") --
 		local re3 = regex.new("@@.@ Password is correct @@..@.@") --
@@ -163,7 +163,7 @@ function cmd_changepassword(sparams)
 	lua_thread.create(function()
 		local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
 		sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Изменение пароля запущено...", 0xFF008B8B)
-		local responsetext = req('https://script.google.com/macros/s/AKfycbyNJd5YdP72_80-OByfihBo74BWl8kJign3SRJEsFn_8At411w/exec?do=changepassword&nick=' .. mynick .. '&oldpassword=' .. oldpassword .. '&newpassword=' .. newpassword .. '')
+		local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=changepassword&nick=' .. mynick .. '&oldpassword=' .. oldpassword .. '&newpassword=' .. newpassword .. '')
 		local re1 = regex.new("@@.@ No access for this @@..@.@") --
 		local re2 = regex.new("@@.@ Old password is wrong @@..@.@") --
 		local re3 = regex.new("@@.@ Password wasn't changed @@..@.@") --
@@ -197,7 +197,7 @@ function authorization()
 		end
 		local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
 		local f, s = mynick:match("(.*)%_(.*)")
-		local responsetext = req('https://script.google.com/macros/s/AKfycbyNJd5YdP72_80-OByfihBo74BWl8kJign3SRJEsFn_8At411w/exec?do=checkpassword&nick=' .. mynick .. '&password=' .. password .. '')
+		local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=checkpassword&nick=' .. mynick .. '&password=' .. password .. '')
 		local re1 = regex.new("@@.@ No access for this @@..@.@") --
 		local re2 = regex.new("@@.@ No password @@..@.@") --
 		local re3 = regex.new("@@.@ Password is correct @@..@.@") --
@@ -225,7 +225,7 @@ function newpassword(password)
 		lua_thread.create(function()
 			local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
 			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Установка пароля запущена...", 0xFF008B8B)
-			local responsetext = req('https://script.google.com/macros/s/AKfycbyNJd5YdP72_80-OByfihBo74BWl8kJign3SRJEsFn_8At411w/exec?do=newpassword&nick=' .. mynick .. '&password=' .. password .. '')
+			local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=newpassword&nick=' .. mynick .. '&password=' .. password .. '')
 			local re1 = regex.new("@@.@ No access for this @@..@.@") --
 			local re2 = regex.new("@@.@ Password wasn't added @@..@.@") --
 			local re3 = regex.new("@@.@ Password was created @@..@.@") --
@@ -258,7 +258,7 @@ function cmd_add(sparams)
 		if id ~= -1 and not sampIsPlayerConnected(tonumber(params[1])) then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Игрок оффлайн", 0xFF008B8B) return end
 		local soldier = id == -1 and params[1] or sampGetPlayerNickname(tonumber(params[1]))
 		local who = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
-		local responsetext = req('https://script.google.com/macros/s/AKfycbyNJd5YdP72_80-OByfihBo74BWl8kJign3SRJEsFn_8At411w/exec?do=add&nick=' .. soldier .. '&who=' .. who .. (params[2] ~= nil and '&text=' .. translit(strrest(params, 2)) .. '' or '') .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
+		local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=add&nick=' .. soldier .. '&who=' .. who .. (params[2] ~= nil and '&text=' .. translit(strrest(params, 2)) .. '' or '') .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
 		local re1 = regex.new("@@.@ Player was added @@..@.@") --
 		local re2 = regex.new("@@.@ No access @@..@.@") --
 		local names1 = re1:match(responsetext)
@@ -284,7 +284,7 @@ function cmd_dell(sparams)
 		if id ~= -1 and not sampIsPlayerConnected(tonumber(params[1])) then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Игрок оффлайн", 0xFF008B8B) return end
 		local soldier = id == -1 and params[1] or sampGetPlayerNickname(tonumber(params[1]))
 		local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
-		local responsetext = req('https://script.google.com/macros/s/AKfycbyNJd5YdP72_80-OByfihBo74BWl8kJign3SRJEsFn_8At411w/exec?do=dell&nick=' .. soldier .. '&mynick=' .. mynick .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
+		local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=dell&nick=' .. soldier .. '&mynick=' .. mynick .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
 		local re1 = regex.new("@@.@ Player was deleted @@..@.@") --
 		local re2 = regex.new("@@.@ No access @@..@.@") --
 		local names1 = re1:match(responsetext)
@@ -325,7 +325,7 @@ function cmd_rss(sparams)
 		if not res3 then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Диалог был закрыт.", 0xFF008B8B) return end
 		local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
 		sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Процесс добавления РСС в таблицу запущен...", 0xFF008B8B)
-		local responsetext = req('https://script.google.com/macros/s/AKfycbyNJd5YdP72_80-OByfihBo74BWl8kJign3SRJEsFn_8At411w/exec?do=rss&type=' .. translit(zzz[tonumber(res1)]) .. '&nick=' .. mynick .. (res3 ~= '' and '&theme=' .. translit(res3) .. '' or '&theme=') .. (res2 ~= '' and '&fond=' .. translit(res2) .. '' or '&fond=') .. '&time=' .. getTime() .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
+		local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=rss&type=' .. translit(zzz[tonumber(res1)]) .. '&nick=' .. mynick .. (res3 ~= '' and '&theme=' .. translit(res3) .. '' or '&theme=') .. (res2 ~= '' and '&fond=' .. translit(res2) .. '' or '&fond=') .. '&time=' .. getTime() .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
 		local re1 = regex.new("@@.@ RSS was added @@..@.@") --
 		local re2 = regex.new("@@.@ RSS is already added @@..@.@") --
 		local re3 = regex.new("@@.@ No access @@..@.@") --
@@ -372,7 +372,7 @@ function ev.onServerMessage(col, text)
 				local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
 				if mynick == who then
 					lua_thread.create(function()
-						local responsetext = req('https://script.google.com/macros/s/AKfycbyNJd5YdP72_80-OByfihBo74BWl8kJign3SRJEsFn_8At411w/exec?do=add&nick=' .. soldier .. '&who=' .. who .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
+						local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=add&nick=' .. soldier .. '&who=' .. who .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
 						local re1 = regex.new("@@.@ Player was added @@..@.@") --
 						local re2 = regex.new("@@.@ No access @@..@.@") --
 						local names1 = re1:match(responsetext)
@@ -392,7 +392,7 @@ function ev.onServerMessage(col, text)
 				local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
 				if mynick == who then
 					lua_thread.create(function()
-						local responsetext = req('https://script.google.com/macros/s/AKfycbyNJd5YdP72_80-OByfihBo74BWl8kJign3SRJEsFn_8At411w/exec?do=dell&nick=' .. soldier .. '&mynick=' .. mynick .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
+						local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=dell&nick=' .. soldier .. '&mynick=' .. mynick .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
 						local re1 = regex.new("@@.@ Player was deleted @@..@.@") --
 						local re2 = regex.new("@@.@ No access @@..@.@") --
 						local names1 = re1:match(responsetext)
@@ -411,7 +411,7 @@ function ev.onServerMessage(col, text)
 				soldier = text:match('%[Сообщество%] (.*)%[%d+%] %{C42100%}Покинул%{9FCCC9%} сообщество')
 				local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
 				lua_thread.create(function()
-					local responsetext = req('https://script.google.com/macros/s/AKfycbyNJd5YdP72_80-OByfihBo74BWl8kJign3SRJEsFn_8At411w/exec?do=dell&nick=' .. soldier .. '&mynick=' .. mynick .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
+					local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=dell&nick=' .. soldier .. '&mynick=' .. mynick .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
 					local re1 = regex.new("@@.@ Player was deleted @@..@.@") --
 					local re2 = regex.new("@@.@ No access @@..@.@") --
 					local names1 = re1:match(responsetext)
@@ -433,7 +433,7 @@ function ev.onServerMessage(col, text)
 			lua_thread.create(function()
 				while true do wait(0) if isKeyDown(vkeys.VK_Y) then break end if isKeyDown(vkeys.VK_N) then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Предложение отклонено.", 0xFF008B8B) return end end
 				local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
-				local responsetext = req('https://script.google.com/macros/s/AKfycbyNJd5YdP72_80-OByfihBo74BWl8kJign3SRJEsFn_8At411w/exec?do=dell&nick=' .. uvalnick .. '&mynick=' .. mynick .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
+				local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=dell&nick=' .. uvalnick .. '&mynick=' .. mynick .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
 				local re1 = regex.new("@@.@ Player was deleted @@..@.@") --
 				local re2 = regex.new("@@.@ No access @@..@.@") --
 				local names1 = re1:match(responsetext)
@@ -456,7 +456,7 @@ function ev.onServerMessage(col, text)
 						sampAddChatMessage("{008B8B}[Взвод №1]: {fffafa}Если хотите сменить ник в таблице. Нажмите Y для согласия и N для отмены", 0xFF008B8B)
 						lua_thread.create(function()
 							while true do wait(0) if isKeyDown(vkeys.VK_Y) then break end if isKeyDown(vkeys.VK_N) then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Предложение отклонено.", 0xFF008B8B) return end end
-							local responsetext = req('https://script.google.com/macros/s/AKfycbyNJd5YdP72_80-OByfihBo74BWl8kJign3SRJEsFn_8At411w/exec?do=changenick&oldnick=' .. oldnick .. '&newnick=' .. newnick .. '')
+							local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=changenick&oldnick=' .. oldnick .. '&newnick=' .. newnick .. '')
 							local re1 = regex.new("@@.@ Nick was changed @@..@.@") --
 							local names = re1:match(responsetext)
 							if names == nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Боец в таблице взвода не найден.", 0xFF008B8B) else sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Обновил ник в таблице взвода.", 0xFF008B8B)
@@ -481,7 +481,7 @@ function ev.onServerMessage(col, text)
 						
 						local oldnick = text:match("%a+%_%a+ одобрил%(а%) заявку на смену ника%: (%a+%_%a+) %>%> " .. newnick .. "")
 						if oldnick ~= nil then
-							local responsetext = req('https://script.google.com/macros/s/AKfycbyNJd5YdP72_80-OByfihBo74BWl8kJign3SRJEsFn_8At411w/exec?do=changenick&oldnick=' .. oldnick .. '&newnick=' .. newnick .. '')
+							local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=changenick&oldnick=' .. oldnick .. '&newnick=' .. newnick .. '')
 							local re1 = regex.new("@@.@ Nick was changed @@..@.@") --
 							local names = re1:match(responsetext)
 							if names == nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Не удалось обновить ник в таблице взвода.", 0xFF008B8B) else sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Обновил ник в таблице взвода.", 0xFF008B8B) end 
@@ -505,7 +505,7 @@ end
 function sendtolog(action, ctime)
 	lua_thread.create(function()
 		local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
-		local text = req('https://script.google.com/macros/s/AKfycbyNJd5YdP72_80-OByfihBo74BWl8kJign3SRJEsFn_8At411w/exec?do=sendtolog&nick=' .. mynick .. '&text=' .. translit(action) .. '&time=' .. ctime .. '')
+		local text = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=sendtolog&nick=' .. mynick .. '&text=' .. translit(action) .. '&time=' .. ctime .. '')
 		if action == 'УДАЧНЫЙ /LOGIN' then
 			if sampGetPlayerIdByNickname('Vulpes_Inculta') ~= nil then
 				wait(1700)
