@@ -13,6 +13,7 @@ local req_index = 0
 local font_flag = require('moonloader').font_flag
 local encoding = require 'encoding'
 encoding.default = 'CP1251'
+local function recode(u8) return encoding.UTF8:decode(u8) end
 u8 = encoding.UTF8
 
 local authorized = false
@@ -31,7 +32,7 @@ function main()
     
     if not isSampLoaded() or not isSampfuncsLoaded() then return end
     while not isSampAvailable() do wait(0) end
-    sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Скрипт загружен", 0xFF008B8B)
+    sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Скрипт загружен", 0xFF008B8B)
     
     checkupdate()
     checkaccess()
@@ -43,7 +44,7 @@ end
 function onScriptTerminate(s, bool)
 	if s == thisScript() and not bool then
 		print("#PathForReload " .. thisScript().path .. " @#")
-		if not updating then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Скрипт наебнулся. Найди строку ошибки в консоле (~) и отпиши Вульпесу. Нажми CTRL + R для перезапуска.", 0xFF008B8B) end
+		if not updating then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Скрипт наебнулся. Найди строку ошибки в консоле (~) и отпиши Вульпесу. Нажми CTRL + R для перезапуска.", 0xFF008B8B) end
 	end
 end
 
@@ -58,7 +59,7 @@ function checkaccess()
 		local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=checkaccess&nick=' .. mynick .. '')
 		local re1 = regex.new("@@.@ Access allowed @@..@.@") --
 		if re1:match(responsetext) == nil then
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Ошибка! Иди нахуй отсюда!", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Ошибка! Иди нахуй отсюда!", 0xFF008B8B)
 			sendtolog('НЕУДАЧНАЯ АВТОРИЗАЦИЯ', getTime())
 			thisScript():unload()
 			return
@@ -88,12 +89,12 @@ function checkaccess()
 end
 
 function cmd_login(sparams)
-	if sparams == "" then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /login [password]", 0xFF008B8B) return end
+	if sparams == "" then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /login [password]", 0xFF008B8B) return end
 	lua_thread.create(function()
 		local password = sparams
 		local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
 		local f, s = mynick:match("(.*)%_(.*)")
-		sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Проверка пароля запущена...", 0xFF008B8B)
+		sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Проверка пароля запущена...", 0xFF008B8B)
 		local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=checkpassword&nick=' .. mynick .. '&password=' .. password .. '')
 		local re1 = regex.new("@@.@ No access for this @@..@.@") --
 		local re2 = regex.new("@@.@ No password @@..@.@") --
@@ -103,15 +104,15 @@ function cmd_login(sparams)
 		local name2 = re2:match(responsetext)
 		local name3 = re3:match(responsetext)
 		local name4 = re4:match(responsetext)
-		if name1 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Вы не имеете доступа к данному функционалу!", 0xFF008B8B) sendtolog('НЕУДАЧНЫЙ /LOGIN', getTime()) return end
-		if name2 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}У вас нету пароля, зарегистрирую вас...", 0xFF008B8B) newpassword(password) return end
-		if name4 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Пароль неверный, используй /login [password] или напиши Вульпесу для восстановления!", 0xFF008B8B) sendtolog('НЕУДАЧНЫЙ /LOGIN', getTime()) return end
+		if name1 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Вы не имеете доступа к данному функционалу!", 0xFF008B8B) sendtolog('НЕУДАЧНЫЙ /LOGIN', getTime()) return end
+		if name2 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}У вас нету пароля, зарегистрирую вас...", 0xFF008B8B) newpassword(password) return end
+		if name4 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Пароль неверный, используй /login [password] или напиши Вульпесу для восстановления!", 0xFF008B8B) sendtolog('НЕУДАЧНЫЙ /LOGIN', getTime()) return end
 		if name3 ~= nil then 
 			authorized = true 
 			FirstPlatoonPassword_ini.CONFIG['PASSWORD'] = password 
 			inicfg.save(FirstPlatoonPassword_ini, "FirstPlatoonPassword.ini") 
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Приятной игры, товарищ " .. s .. '', 0xFF008B8B)
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Все команды - /getinfo", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Приятной игры, товарищ " .. s .. '', 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Все команды - /getinfo", 0xFF008B8B)
 			sendtolog('УДАЧНЫЙ /LOGIN', getTime())
 			return 
 		end
@@ -119,7 +120,7 @@ function cmd_login(sparams)
 end
 
 function cmd_register(sparams)
-	if sparams == "" then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /register [password]", 0xFF008B8B) return end
+	if sparams == "" then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /register [password]", 0xFF008B8B) return end
 	newpassword(sparams)
 end
 
@@ -127,12 +128,12 @@ function cmd_changepassword(sparams)
 	local params = {}
 	for v in string.gmatch(sparams, "[^%s]+") do table.insert(params, v) end
 	local id = -1
-	if params[1] == nil or params[1] == '' or params[2] == nil or params[2] == '' then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /changepassword [oldpassword] [newpassword]", 0xFF008B8B) return end
+	if params[1] == nil or params[1] == '' or params[2] == nil or params[2] == '' then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /changepassword [oldpassword] [newpassword]", 0xFF008B8B) return end
 	local oldpassword = params[1]
 	local newpassword = params[2]
 	lua_thread.create(function()
 		local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
-		sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Изменение пароля запущено...", 0xFF008B8B)
+		sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Изменение пароля запущено...", 0xFF008B8B)
 		local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=changepassword&nick=' .. mynick .. '&oldpassword=' .. oldpassword .. '&newpassword=' .. newpassword .. '')
 		local re1 = regex.new("@@.@ No access for this @@..@.@") --
 		local re2 = regex.new("@@.@ Old password is wrong @@..@.@") --
@@ -142,14 +143,14 @@ function cmd_changepassword(sparams)
 		local name2 = re2:match(responsetext)
 		local name3 = re3:match(responsetext)
 		local name4 = re4:match(responsetext)
-		if name1 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Вы не имеете доступа к данному функционалу!", 0xFF008B8B) sendtolog('НЕУДАЧНЫЙ /CHANGEPASSWORD', getTime()) return end
-		if name2 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Старый пароль - неправильный!", 0xFF008B8B) sendtolog('НЕУДАЧНЫЙ /CHANGEPASSWORD', getTime()) return end
-		if name3 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Пароль не был изменён, попробуйте ещё раз!", 0xFF008B8B) sendtolog('НЕУДАЧНЫЙ /CHANGEPASSWORD', getTime()) return end
+		if name1 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Вы не имеете доступа к данному функционалу!", 0xFF008B8B) sendtolog('НЕУДАЧНЫЙ /CHANGEPASSWORD', getTime()) return end
+		if name2 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Старый пароль - неправильный!", 0xFF008B8B) sendtolog('НЕУДАЧНЫЙ /CHANGEPASSWORD', getTime()) return end
+		if name3 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Пароль не был изменён, попробуйте ещё раз!", 0xFF008B8B) sendtolog('НЕУДАЧНЫЙ /CHANGEPASSWORD', getTime()) return end
 		if name4 ~= nil then
 			FirstPlatoonPassword_ini.CONFIG['PASSWORD'] = newpassword
 			inicfg.save(FirstPlatoonPassword_ini, "FirstPlatoonPassword.ini")
 			authorized = false 
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Пароль был успешно изменён, начинаю авторизацию...", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Пароль был успешно изменён, начинаю авторизацию...", 0xFF008B8B)
 			sendtolog('УДАЧНЫЙ /CHANGEPASSWORD', getTime())
 			authorization()
 			return 
@@ -161,11 +162,11 @@ function authorization()
 	lua_thread.create(function()
 		local password = FirstPlatoonPassword_ini.CONFIG['PASSWORD']
 		if FirstPlatoonPassword_ini.CONFIG['PASSWORD'] == '' then
-			if not showdialog(1, "Введите ваш пароль", "Если пароль не задан - вводите новый; Ни в коем случае не используйте пароли от аккаунтов!!!", "OK") then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Произошла ошибка, попробуйте /login [password]", 0xFF008B8B) return end
+			if not showdialog(1, "Введите ваш пароль", "Если пароль не задан - вводите новый; Ни в коем случае не используйте пароли от аккаунтов!!!", "OK") then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Произошла ошибка, попробуйте /login [password]", 0xFF008B8B) return end
 			password = waitForChooseInDialog(1)
-			if not password or password == "" then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Ошибка ввода пароля, введите /login [password]", 0xFF008B8B) return end
+			if not password or password == "" then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Ошибка ввода пароля, введите /login [password]", 0xFF008B8B) return end
 		end
-		sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Авторизация запущена...", 0xFF008B8B)
+		sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Авторизация запущена...", 0xFF008B8B)
 		local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
 		local f, s = mynick:match("(.*)%_(.*)")
 		local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=checkpassword&nick=' .. mynick .. '&password=' .. password .. '')
@@ -177,15 +178,15 @@ function authorization()
 		local name2 = re2:match(responsetext)
 		local name3 = re3:match(responsetext)
 		local name4 = re4:match(responsetext)
-		if name1 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Вы не имеете доступа к данному функционалу!", 0xFF008B8B) sendtolog('НЕУДАЧНЫЙ /LOGIN', getTime()) return end
-		if name2 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}У вас нету пароля, зарегистрирую вас...", 0xFF008B8B) newpassword(password) return end
-		if name4 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Пароль неверный, используй /login [password] или напиши Вульпесу для восстановления!", 0xFF008B8B) sendtolog('НЕУДАЧНЫЙ /LOGIN', getTime()) return end
+		if name1 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Вы не имеете доступа к данному функционалу!", 0xFF008B8B) sendtolog('НЕУДАЧНЫЙ /LOGIN', getTime()) return end
+		if name2 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}У вас нету пароля, зарегистрирую вас...", 0xFF008B8B) newpassword(password) return end
+		if name4 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Пароль неверный, используй /login [password] или напиши Вульпесу для восстановления!", 0xFF008B8B) sendtolog('НЕУДАЧНЫЙ /LOGIN', getTime()) return end
 		if name3 ~= nil then
 			FirstPlatoonPassword_ini.CONFIG['PASSWORD'] = password
 			inicfg.save(FirstPlatoonPassword_ini, "FirstPlatoonPassword.ini")
 			authorized = true 
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Приятной игры, товарищ " .. s .. '', 0xFF008B8B)
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Все команды - /getinfo", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Приятной игры, товарищ " .. s .. '', 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Все команды - /getinfo", 0xFF008B8B)
 			sendtolog('УДАЧНЫЙ /LOGIN', getTime()) 
 		return end
 	end)
@@ -195,7 +196,7 @@ function newpassword(password)
 	if password ~= nil then
 		lua_thread.create(function()
 			local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Установка пароля запущена...", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Установка пароля запущена...", 0xFF008B8B)
 			local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=newpassword&nick=' .. mynick .. '&password=' .. password .. '')
 			local re1 = regex.new("@@.@ No access for this @@..@.@") --
 			local re2 = regex.new("@@.@ Password wasn't added @@..@.@") --
@@ -203,9 +204,9 @@ function newpassword(password)
 			local name1 = re1:match(responsetext)
 			local name2 = re2:match(responsetext)
 			local name3 = re3:match(responsetext)
-			if name1 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Вы не имеете доступа к данному функционалу!", 0xFF008B8B) sendtolog('НЕУДАЧНЫЙ /REGISTER', getTime()) return end
-			if name2 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Пароль не был добавлен, попробуйте /register [password]", 0xFF008B8B) sendtolog('НЕУДАЧНЫЙ /REGISTER', getTime()) return end
-			if name3 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Пароль был установлен, начинаю авторизацию...", 0xFF008B8B)
+			if name1 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Вы не имеете доступа к данному функционалу!", 0xFF008B8B) sendtolog('НЕУДАЧНЫЙ /REGISTER', getTime()) return end
+			if name2 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Пароль не был добавлен, попробуйте /register [password]", 0xFF008B8B) sendtolog('НЕУДАЧНЫЙ /REGISTER', getTime()) return end
+			if name3 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Пароль был установлен, начинаю авторизацию...", 0xFF008B8B)
 				FirstPlatoonPassword_ini.CONFIG['PASSWORD'] = password
 				inicfg.save(FirstPlatoonPassword_ini, "FirstPlatoonPassword.ini")
 				sendtolog('УДАЧНЫЙ /REGISTER', getTime())
@@ -221,28 +222,28 @@ function cmd_getinfo()
 end
 function cmd_add(sparams)
 	lua_thread.create(function()
-		if sparams == "" then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /add [id/nick] ([комментарий])", 0xFF008B8B) return end
+		if sparams == "" then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /add [id/nick] ([комментарий])", 0xFF008B8B) return end
 		local params = {}
 		for v in string.gmatch(sparams, "[^%s]+") do table.insert(params, v) end
 		local id = -1
 		if tonumber(params[1]) ~= nil and tonumber(params[1]) >= 0 and tonumber(params[1]) <= 999  then id = tonumber(params[1]) end
-		if id ~= -1 and not sampIsPlayerConnected(tonumber(params[1])) then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Игрок оффлайн", 0xFF008B8B) return end
+		if id ~= -1 and not sampIsPlayerConnected(tonumber(params[1])) then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Игрок оффлайн", 0xFF008B8B) return end
 		local soldier = id == -1 and params[1] or sampGetPlayerNickname(tonumber(params[1]))
 		local who = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
-		sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Добавление запущено...", 0xFF008B8B)
+		sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Добавление запущено...", 0xFF008B8B)
 		local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=add&nick=' .. soldier .. '&who=' .. who .. (params[2] ~= nil and '&text=' .. translit(strrest(params, 2)) .. '' or '') .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
 		local re1 = regex.new("@@.@ Player was added @@..@.@") --
 		local re2 = regex.new("@@.@ No access @@..@.@") --
 		local names1 = re1:match(responsetext)
 		local names2 = re2:match(responsetext)
-		if names2 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sendtolog('НЕУДАЧНОЕ ДОБАВЛЕНИЕ ' .. soldier .. '', getTime()) return end
+		if names2 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sendtolog('НЕУДАЧНОЕ ДОБАВЛЕНИЕ ' .. soldier .. '', getTime()) return end
 		if names1 ~= nil then 
 			printStringNow("~g~~h~ ADD TO TABLE " .. soldier .. "", 10000)
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " был добавлен в таблицу взвода", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " был добавлен в таблицу взвода", 0xFF008B8B)
 			sendtolog('ДОБАВЛЕНИЕ ' .. soldier .. '', getTime())
 			else
 			printStringNow("~g~~h~ ADD TO TABLE " .. soldier .. "", 10000)
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " был уже добавлен в таблицу", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " был уже добавлен в таблицу", 0xFF008B8B)
 			sendtolog('ДОБАВЛЕНИЕ ' .. soldier .. '', getTime())
 			return
 		end
@@ -250,40 +251,40 @@ function cmd_add(sparams)
 end
 function cmd_upd()
 	lua_thread.create(function()
-		sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Проверка информации запущена...", 0xFF008B8B)
+		sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Проверка информации запущена...", 0xFF008B8B)
 		local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=checkupdate')
 		local re0 = regex.new("Version: (.*)\\; URL: (.*)\\; Info: (.*)@@.@") --
 		local ver, url, upd = re0:match(responsetext)
-		if ver == nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Не удалось получить информацию об обновлениях.", 0xFF008B8B) return end
-		if tonumber(ver) > V then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Обнаружена новая версия " .. ver .. ". Скрипт начнет обновление немедленно.", 0xFF008B8B) updatescr(url, ver, upd) end
-		sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Последняя версия скрипта: v" .. ver .. ", что нового:", 0xFF008B8B)
-		sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}" .. upd .. "", 0xFF008B8B)
+		if ver == nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Не удалось получить информацию об обновлениях.", 0xFF008B8B) return end
+		if tonumber(ver) > V then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Обнаружена новая версия " .. ver .. ". Скрипт начнет обновление немедленно.", 0xFF008B8B) updatescr(url, ver, upd) end
+		sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Последняя версия скрипта: v" .. ver .. ", что нового:", 0xFF008B8B)
+		sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}" .. upd .. "", 0xFF008B8B)
 	end)
 end
 function cmd_dell(sparams)
 	lua_thread.create(function()
-		if sparams == "" then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /dell [id/nick]", 0xFF008B8B) return end
+		if sparams == "" then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /dell [id/nick]", 0xFF008B8B) return end
 		local params = {}
 		for v in string.gmatch(sparams, "[^%s]+") do table.insert(params, v) end
 		local id = -1
 		if tonumber(params[1]) ~= nil and tonumber(params[1]) >= 0 and tonumber(params[1]) <= 999  then id = tonumber(params[1]) end
-		if id ~= -1 and not sampIsPlayerConnected(tonumber(params[1])) then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Игрок оффлайн", 0xFF008B8B) return end
+		if id ~= -1 and not sampIsPlayerConnected(tonumber(params[1])) then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Игрок оффлайн", 0xFF008B8B) return end
 		local soldier = id == -1 and params[1] or sampGetPlayerNickname(tonumber(params[1]))
 		local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
-		sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Удаление запущено...", 0xFF008B8B)
+		sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Удаление запущено...", 0xFF008B8B)
 		local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=dell&nick=' .. soldier .. '&mynick=' .. mynick .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
 		local re1 = regex.new("@@.@ Player was deleted @@..@.@") --
 		local re2 = regex.new("@@.@ No access @@..@.@") --
 		local names1 = re1:match(responsetext)
 		local names2 = re2:match(responsetext)
-		if names2 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sendtolog('НЕУДАЧНОЕ УДАЛЕНИЕ ' .. soldier .. '', getTime()) return end
+		if names2 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sendtolog('НЕУДАЧНОЕ УДАЛЕНИЕ ' .. soldier .. '', getTime()) return end
 		if names1 ~= nil then 
 			printStringNow("~r~~h~ DELL FROM TABLE " .. soldier .. "", 10000)
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " был удалён из таблицы взвода", 0xFF008B8B) 
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " был удалён из таблицы взвода", 0xFF008B8B) 
 			sendtolog('УДАЛЕНИЕ ' .. soldier .. '', getTime()) 
 			else
 			printStringNow("~r~~h~ DELL FROM TABLE " .. soldier .. "", 10000)
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " уже не найден в таблице", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " уже не найден в таблице", 0xFF008B8B)
 			sendtolog('УДАЛЕНИЕ ' .. soldier .. '', getTime())
 			return
 		end
@@ -291,30 +292,30 @@ function cmd_dell(sparams)
 end
 function cmd_check(sparams)
 	lua_thread.create(function()
-		if sparams == "" then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /check [id/nick]", 0xFF008B8B) return end
+		if sparams == "" then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /check [id/nick]", 0xFF008B8B) return end
 		local params = {}
 		for v in string.gmatch(sparams, "[^%s]+") do table.insert(params, v) end
 		local id = -1
 		if tonumber(params[1]) ~= nil and tonumber(params[1]) >= 0 and tonumber(params[1]) <= 999  then id = tonumber(params[1]) end
-		if id ~= -1 and not sampIsPlayerConnected(tonumber(params[1])) then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Игрок оффлайн", 0xFF008B8B) return end
+		if id ~= -1 and not sampIsPlayerConnected(tonumber(params[1])) then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Игрок оффлайн", 0xFF008B8B) return end
 		local soldier = id == -1 and params[1] or sampGetPlayerNickname(tonumber(params[1]))
-		sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Проверка информации запущена...", 0xFF008B8B)
+		sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Проверка информации запущена...", 0xFF008B8B)
 		local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=checkinfo&nick=' .. soldier .. '&who=' .. sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED))) .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
 		local re1 = regex.new("@@.@ Post: (.*); Rank: (.*); Who: (.*); Date: (.*); Comment: (.*); Marks: (.*); VK: (.*) @@..@.@") --
 		local re2 = regex.new("@@.@ No information @@..@.@") --
 		local re3 = regex.new("@@.@ No access @@..@.@") --
 		local spost, srank, swho, sdate, scomment, smarks, svk = re1:match(responsetext)
-		if re2:match(responsetext) ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " в таблице не найден" , 0xFF008B8B) sendtolog('НЕТУ ИНФОРМАЦИИ ' .. soldier .. '', getTime()) return end
-		if re3:match(responsetext) ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sendtolog('НЕУДАЧНАЯ ПРОВЕРКА ' .. soldier .. '', getTime()) return end
+		if re2:match(responsetext) ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " в таблице не найден" , 0xFF008B8B) sendtolog('НЕТУ ИНФОРМАЦИИ ' .. soldier .. '', getTime()) return end
+		if re3:match(responsetext) ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sendtolog('НЕУДАЧНАЯ ПРОВЕРКА ' .. soldier .. '', getTime()) return end
 		if re1:match(responsetext) ~= nil then
-			sampAddChatMessage("{008B8B}[Взвод №1]: Информация по " .. soldier .. " из таблицы взвода:", 0xFF008B8B)
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Звание: {008B8B}" .. srank .. "", 0xFF008B8B)
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Должность: {008B8B}" .. spost .. "", 0xFF008B8B)
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Дата добавления/назначения: {008B8B}" .. sdate .. "", 0xFF008B8B)
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Кем был добавлен/назначен: {008B8B}" .. swho .. "", 0xFF008B8B)
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Отметки: {008B8B}" .. smarks .. "", 0xFF008B8B)
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Комментарий: {008B8B}" .. scomment .. "", 0xFF008B8B)
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Наличие ВК: {008B8B}" .. svk .. "", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: Информация по " .. soldier .. " из таблицы взвода:", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Звание: {008B8B}" .. srank .. "", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Должность: {008B8B}" .. spost .. "", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Дата добавления/назначения: {008B8B}" .. sdate .. "", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Кем был добавлен/назначен: {008B8B}" .. swho .. "", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Отметки: {008B8B}" .. smarks .. "", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Комментарий: {008B8B}" .. scomment .. "", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Наличие ВК: {008B8B}" .. svk .. "", 0xFF008B8B)
 			sendtolog('УДАЧНАЯ ПРОВЕРКА ИНФОРМАЦИИ ' .. soldier .. '', getTime())
 			return
 		end
@@ -322,29 +323,29 @@ function cmd_check(sparams)
 end
 function cmd_rss(sparams)
 	lua_thread.create(function()
-		--if sparams == "" then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /rss [тип рсс(1-10)] [фонд(необязательно)]", 0xFF008B8B) sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}1 - Лекция; 2 - Треня; 3 - Угон; 4 - ЧС; 5 - Потяряшка; 6 - Опрос; 7 - Строевая; 8 - КМБ; 9 - Наряд; 10 - Прочее", 0xFF008B8B) return end
+		--if sparams == "" then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /rss [тип рсс(1-10)] [фонд(необязательно)]", 0xFF008B8B) sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}1 - Лекция; 2 - Треня; 3 - Угон; 4 - ЧС; 5 - Потяряшка; 6 - Опрос; 7 - Строевая; 8 - КМБ; 9 - Наряд; 10 - Прочее", 0xFF008B8B) return end
 		--local params = {}
 		--for v in string.gmatch(sparams, "[^%s]+") do table.insert(params, v) end
 		--local zzz = {[1] = "Лекция", [2] = "Тренировка", [3] = "Угон", [4] = "ЧС", [5] = "Потеряшка", [6] = "Опрос", [7] = "Строевая", [8] = "КМБ", [9] = "Наряд", [10] = "Прочее"}
-		--if tonumber(params[1]) == nil or zzz[tonumber(params[1])] == nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Неверный тип РСС.", 0xFF008B8B) return end
+		--if tonumber(params[1]) == nil or zzz[tonumber(params[1])] == nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Неверный тип РСС.", 0xFF008B8B) return end
 		--local num = tonumber(params[1])
 		local res2 = ''
 		local res3 = ''
-		--if tonumber(params[2]) ~= nil then if tonumber(params[2]) < 1 then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Неверный фонд РСС.", 0xFF008B8B) return end fond = params[2] end
-		if not showdialog(1, "Введите тип РСС", "1 - Призыв; 2 - Лекция; 3 - Треня; 4 - Угон; 5 - ЧС; 6 - Потяряшка; 7 - Опрос; 8 - Строевая; 9 - КМБ; 10 - Наряд; 11 - Прочее", "OK") then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Произошла ошибка, попробуйте ещё раз", 0xFF008B8B) return end
+		--if tonumber(params[2]) ~= nil then if tonumber(params[2]) < 1 then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Неверный фонд РСС.", 0xFF008B8B) return end fond = params[2] end
+		if not showdialog(1, "Введите тип РСС", "1 - Призыв; 2 - Лекция; 3 - Треня; 4 - Угон; 5 - ЧС; 6 - Потяряшка; 7 - Опрос; 8 - Строевая; 9 - КМБ; 10 - Наряд; 11 - Прочее", "OK") then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Произошла ошибка, попробуйте ещё раз", 0xFF008B8B) return end
 		local res1 = waitForChooseInDialog(1)
-		if not res1 or res1 == "" then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Диалог был закрыт.", 0xFF008B8B) return end
+		if not res1 or res1 == "" then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Диалог был закрыт.", 0xFF008B8B) return end
 		local zzz = {[1] = "Призыв", [2] = "Лекция", [3] = "Тренировка", [4] = "Угон", [5] = "ЧС", [6] = "Потеряшка", [7] = "Опрос", [8] = "Строевая", [9] = "КМБ", [10] = "Наряд", [11] = "Прочее"}
-		if tonumber(res1) == nil or zzz[tonumber(res1)] == nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Неверный тип РСС.", 0xFF008B8B) return end
-		if not showdialog(1, "Введите фонд", "Целое положительное число, или оставьте пустым если нету фонда:", "OK") then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Произошла ошибка, попробуйте ещё раз", 0xFF008B8B) return end
+		if tonumber(res1) == nil or zzz[tonumber(res1)] == nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Неверный тип РСС.", 0xFF008B8B) return end
+		if not showdialog(1, "Введите фонд", "Целое положительное число, или оставьте пустым если нету фонда:", "OK") then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Произошла ошибка, попробуйте ещё раз", 0xFF008B8B) return end
 		local res2 = waitForChooseInDialog(1)
-		if not res2 then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Диалог был закрыт.", 0xFF008B8B) return end
-		if tonumber(res2) ~= nil then if tonumber(res2) < 1 then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Неверный фонд РСС.", 0xFF008B8B) return end end
-		if not showdialog(1, "Опишите РСС (Тема)", "Текст:", "OK") then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Произошла ошибка, попробуйте ещё раз", 0xFF008B8B) return end
+		if not res2 then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Диалог был закрыт.", 0xFF008B8B) return end
+		if tonumber(res2) ~= nil then if tonumber(res2) < 1 then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Неверный фонд РСС.", 0xFF008B8B) return end end
+		if not showdialog(1, "Опишите РСС (Тема)", "Текст:", "OK") then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Произошла ошибка, попробуйте ещё раз", 0xFF008B8B) return end
 		local res3 = waitForChooseInDialog(1)
-		if not res3 then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Диалог был закрыт.", 0xFF008B8B) return end
+		if not res3 then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Диалог был закрыт.", 0xFF008B8B) return end
 		local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
-		sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Процесс добавления РСС в таблицу запущен...", 0xFF008B8B)
+		sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Процесс добавления РСС в таблицу запущен...", 0xFF008B8B)
 		local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=rss&type=' .. translit(zzz[tonumber(res1)]) .. '&nick=' .. mynick .. (res3 ~= '' and '&theme=' .. translit(res3) .. '' or '&theme=') .. (res2 ~= '' and '&fond=' .. translit(res2) .. '' or '&fond=') .. '&time=' .. getTime() .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
 		local re1 = regex.new("@@.@ RSS was added @@..@.@") --
 		local re2 = regex.new("@@.@ RSS is already added @@..@.@") --
@@ -352,15 +353,15 @@ function cmd_rss(sparams)
 		local names1 = re1:match(responsetext)
 		local names2 = re2:match(responsetext)
 		local names3 = re3:match(responsetext)
-		if names3 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sendtolog('НЕУДАЧНОЕ РСС ' .. zzz[tonumber(res1)] .. '', getTime()) return end
+		if names3 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sendtolog('НЕУДАЧНОЕ РСС ' .. zzz[tonumber(res1)] .. '', getTime()) return end
 		sendtolog('РСС ' .. zzz[tonumber(res1)] .. '', getTime())
 		if names1 ~= nil then
 			printStringNow("~g~~h~ RSS WAS ADDED", 10000)
-		sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}РСС была успешно добавлена! Не забудь загрузить скрин в таблицу!!!", 0xFF008B8B) return end
+		sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}РСС была успешно добавлена! Не забудь загрузить скрин в таблицу!!!", 0xFF008B8B) return end
 		if names2 ~= nil then 
 			printStringNow("~g~~h~ RSS WAS ADDED", 10000)
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}РСС была уже добавлена! Не забудь загрузить скрин в таблицу!!!", 0xFF008B8B) else
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Ошибка при добавлении РСС! Попробуй ещё раз!", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}РСС была уже добавлена! Не забудь загрузить скрин в таблицу!!!", 0xFF008B8B) else
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Ошибка при добавлении РСС! Попробуй ещё раз!", 0xFF008B8B)
 			return
 		end
 	end)
@@ -368,17 +369,17 @@ end
 
 function cmd_moder(sparams)
 	lua_thread.create(function()
-		if sparams == "" then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /moder [add/dell/state/list] [id/nick]", 0xFF008B8B) return end
+		if sparams == "" then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /moder [add/dell/state/list] [id/nick]", 0xFF008B8B) return end
 		local params = {}
 		for v in string.gmatch(sparams, "[^%s]+") do table.insert(params, v) end
 		local id = -1
-		if params[1] == nil or params[1] == '' then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /moder [add/dell/state/list] [id/nick]", 0xFF008B8B) return end
+		if params[1] == nil or params[1] == '' then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /moder [add/dell/state/list] [id/nick]", 0xFF008B8B) return end
 		if params[1] == 'add' then
 			if tonumber(params[2]) ~= nil and tonumber(params[2]) >= 0 and tonumber(params[2]) <= 999  then id = tonumber(params[2]) end
-			if id ~= -1 and not sampIsPlayerConnected(tonumber(params[2])) then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Игрок оффлайн", 0xFF008B8B) return end
+			if id ~= -1 and not sampIsPlayerConnected(tonumber(params[2])) then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Игрок оффлайн", 0xFF008B8B) return end
 			local soldier = id == -1 and params[2] or sampGetPlayerNickname(tonumber(params[2]))
 			local who = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Добавление запущено...", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Добавление запущено...", 0xFF008B8B)
 			local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=addmoder&nick=' .. soldier .. '&who=' .. who .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
 			local re1 = regex.new("@@.@ Moder was added @@..@.@") --
 			local re2 = regex.new("@@.@ Moder is already added @@..@.@") --
@@ -386,16 +387,16 @@ function cmd_moder(sparams)
 			local names1 = re1:match(responsetext)
 			local names2 = re2:match(responsetext)
 			local names3 = re3:match(responsetext)
-			if names3 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Доступ к данной функции есть только у модераторов скрипта!", 0xFF008B8B) return end
-			if names2 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. ' был уже зарегистрирован в системе', 0xFF008B8B) return end
-			if names1 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. ' был зарегистрирован в системе', 0xFF008B8B) return end
+			if names3 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Доступ к данной функции есть только у модераторов скрипта!", 0xFF008B8B) return end
+			if names2 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. ' был уже зарегистрирован в системе', 0xFF008B8B) return end
+			if names1 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. ' был зарегистрирован в системе', 0xFF008B8B) return end
 		end
 		if params[1] == 'dell' then
 			if tonumber(params[2]) ~= nil and tonumber(params[2]) >= 0 and tonumber(params[2]) <= 999  then id = tonumber(params[2]) end
-			if id ~= -1 and not sampIsPlayerConnected(tonumber(params[2])) then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Игрок оффлайн", 0xFF008B8B) return end
+			if id ~= -1 and not sampIsPlayerConnected(tonumber(params[2])) then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Игрок оффлайн", 0xFF008B8B) return end
 			local soldier = id == -1 and params[2] or sampGetPlayerNickname(tonumber(params[2]))
 			local who = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Удаление запущено...", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Удаление запущено...", 0xFF008B8B)
 			local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=dellmoder&nick=' .. soldier .. '&who=' .. who .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
 			local re1 = regex.new("@@.@ Moder was removed @@..@.@") --
 			local re2 = regex.new("@@.@ Moder is already removed @@..@.@") --
@@ -403,18 +404,18 @@ function cmd_moder(sparams)
 			local names1 = re1:match(responsetext)
 			local names2 = re2:match(responsetext)
 			local names3 = re3:match(responsetext)
-			if names3 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Доступ к данной функции есть только у модераторов скрипта!", 0xFF008B8B) return end
-			if names2 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. ' был уже удалён из системы', 0xFF008B8B) return end
-			if names1 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. ' был удалён из системы', 0xFF008B8B) return end
+			if names3 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Доступ к данной функции есть только у модераторов скрипта!", 0xFF008B8B) return end
+			if names2 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. ' был уже удалён из системы', 0xFF008B8B) return end
+			if names1 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. ' был удалён из системы', 0xFF008B8B) return end
 		end
 		if params[1] == 'state' then
 			if tonumber(params[2]) ~= nil and tonumber(params[2]) >= 0 and tonumber(params[2]) <= 999  then id = tonumber(params[2]) end
-			if id ~= -1 and not sampIsPlayerConnected(tonumber(params[2])) then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Игрок оффлайн", 0xFF008B8B) return end
+			if id ~= -1 and not sampIsPlayerConnected(tonumber(params[2])) then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Игрок оффлайн", 0xFF008B8B) return end
 			local soldier = id == -1 and params[2] or sampGetPlayerNickname(tonumber(params[2]))
-			if params[3] == nil or params[3] == '' or (params[3] ~= '1' and params[3] ~= '2') then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /moder state [id/nick] [1 - боец, 2 - модератор]", 0xFF008B8B) return end
+			if params[3] == nil or params[3] == '' or (params[3] ~= '1' and params[3] ~= '2') then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /moder state [id/nick] [1 - боец, 2 - модератор]", 0xFF008B8B) return end
 			local state = params[3]
 			local who = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Изменение статуса запущено...", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Изменение статуса запущено...", 0xFF008B8B)
 			local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=statemoder&nick=' .. soldier .. '&lvl=' .. state .. '&who=' .. who .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
 			local re1 = regex.new("@@.@ Moder was changed @@..@.@") --
 			local re2 = regex.new("@@.@ Moder wasn't changed @@..@.@") --
@@ -422,27 +423,27 @@ function cmd_moder(sparams)
 			local names1 = re1:match(responsetext)
 			local names2 = re2:match(responsetext)
 			local names3 = re3:match(responsetext)
-			if names3 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Доступ к данной функции есть только у модераторов скрипта!", 0xFF008B8B) return end
-			if names2 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Статус бойца " .. soldier .. ' не был изменён в системе!', 0xFF008B8B) return end
-			if names1 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Статус бойца " .. soldier .. ' был изменён в системе!', 0xFF008B8B) return end
+			if names3 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Доступ к данной функции есть только у модераторов скрипта!", 0xFF008B8B) return end
+			if names2 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Статус бойца " .. soldier .. ' не был изменён в системе!', 0xFF008B8B) return end
+			if names1 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Статус бойца " .. soldier .. ' был изменён в системе!', 0xFF008B8B) return end
 		end
 		if params[1] == 'list' then
 			local who = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
-			sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Получение информации запущено...", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Получение информации запущено...", 0xFF008B8B)
 			local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=listmoder&who=' .. who .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
 			local re1 = regex.new("@@.@ Moders: (.*) @@..@.@") --
 			local re2 = regex.new("@@.@ No access @@..@.@") --
 			local names1 = re1:match(responsetext)
 			local names2 = re2:match(responsetext)
-			if names2 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) return end
-			if names1 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Список игроков с доступом к скрипту:", 0xFF008B8B)
+			if names2 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) return end
+			if names1 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Список игроков с доступом к скрипту:", 0xFF008B8B)
 				for k, v in ipairs(names1:split("; ")) do
-					sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}" .. k .. ". Боец {008B8B}" .. v .. "", 0xFF008B8B)
+					sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}" .. k .. ". Боец {008B8B}" .. v .. "", 0xFF008B8B)
 				end
 				return 
 			end
 		end
-		sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /moder [add/dell/state/list] [id/nick]", 0xFF008B8B) return
+		sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Неверный параметр. Введите /moder [add/dell/state/list] [id/nick]", 0xFF008B8B) return
 	end)
 end
 
@@ -471,17 +472,17 @@ function ev.onServerMessage(col, text)
 				local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
 				if mynick == who then
 					lua_thread.create(function()
-						sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Добавление запущено...", 0xFF008B8B)
+						sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Добавление запущено...", 0xFF008B8B)
 						local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=add&nick=' .. soldier .. '&who=' .. who .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
 						local re1 = regex.new("@@.@ Player was added @@..@.@") --
 						local re2 = regex.new("@@.@ No access @@..@.@") --
 						local names1 = re1:match(responsetext)
 						local names2 = re2:match(responsetext)
-						if names2 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) return end
+						if names2 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) return end
 						sendtolog('ДОБАВЛЕНИЕ ' .. soldier .. '', getTime())
 						if names1 ~= nil then
-							sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " был добавлен в таблицу взвода", 0xFF008B8B) else
-							sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " был уже добавлен в таблицу", 0xFF008B8B)
+							sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " был добавлен в таблицу взвода", 0xFF008B8B) else
+							sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " был уже добавлен в таблицу", 0xFF008B8B)
 							return
 						end
 					end)
@@ -492,17 +493,17 @@ function ev.onServerMessage(col, text)
 				local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
 				if mynick == who then
 					lua_thread.create(function()
-						sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Удаление запущено...", 0xFF008B8B)
+						sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Удаление запущено...", 0xFF008B8B)
 						local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=dell&nick=' .. soldier .. '&mynick=' .. mynick .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
 						local re1 = regex.new("@@.@ Player was deleted @@..@.@") --
 						local re2 = regex.new("@@.@ No access @@..@.@") --
 						local names1 = re1:match(responsetext)
 						local names2 = re2:match(responsetext)
-						if names2 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sendtolog('НЕУДАЧНОЕ УДАЛЕНИЕ ' .. soldier .. '', getTime()) return end
+						if names2 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sendtolog('НЕУДАЧНОЕ УДАЛЕНИЕ ' .. soldier .. '', getTime()) return end
 						sendtolog('УДАЛЕНИЕ ' .. soldier .. '', getTime())
 						if names1 ~= nil then
-							sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " был удалён из таблицы взвода", 0xFF008B8B) else
-							sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " уже не найден в таблице", 0xFF008B8B)
+							sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " был удалён из таблицы взвода", 0xFF008B8B) else
+							sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " уже не найден в таблице", 0xFF008B8B)
 							return
 						end
 					end)
@@ -512,17 +513,17 @@ function ev.onServerMessage(col, text)
 				soldier = text:match('%[Сообщество%] (.*)%[%d+%] %{C42100%}Покинул%{9FCCC9%} сообщество')
 				local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
 				lua_thread.create(function()
-					sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Удаление запущено...", 0xFF008B8B)
+					sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Удаление запущено...", 0xFF008B8B)
 					local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=dell&nick=' .. soldier .. '&mynick=' .. mynick .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
 					local re1 = regex.new("@@.@ Player was deleted @@..@.@") --
 					local re2 = regex.new("@@.@ No access @@..@.@") --
 					local names1 = re1:match(responsetext)
 					local names2 = re2:match(responsetext)
-					if names2 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sendtolog('НЕУДАЧНОЕ УДАЛЕНИЕ ' .. soldier .. '', getTime()) return end
+					if names2 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sendtolog('НЕУДАЧНОЕ УДАЛЕНИЕ ' .. soldier .. '', getTime()) return end
 					sendtolog('УДАЛЕНИЕ ' .. soldier .. '', getTime())
 					if names1 ~= nil then
-						sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " был удалён из таблицы взвода", 0xFF008B8B) else
-						sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " уже не найден в таблице", 0xFF008B8B)
+						sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " был удалён из таблицы взвода", 0xFF008B8B) else
+						sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Боец " .. soldier .. " уже не найден в таблице", 0xFF008B8B)
 						return
 					end
 				end)
@@ -530,22 +531,22 @@ function ev.onServerMessage(col, text)
 		end
 		if text:match('%a+%_%a+ выгнал (%a+%_%a+) из организации%. Причина%: .+') and col == 1790050303 then
 			uvalnick = text:match('%a+%_%a+ выгнал (%a+%_%a+) из организации%. Причина%: .+')
-			sampAddChatMessage("{008B8B}[Взвод №1]: {fffafa}Обнаружено увольнение " .. uvalnick .. ". Желаете попробовать удалить из таблицы?", 0xFF008B8B)
-			sampAddChatMessage("{008B8B}[Взвод №1]: {fffafa}Нажмите Y для согласия и N для отмены", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {fffafa}Обнаружено увольнение " .. uvalnick .. ". Желаете попробовать удалить из таблицы?", 0xFF008B8B)
+			sampAddChatMessage(u8"{008B8B}[Взвод №1]: {fffafa}Нажмите Y для согласия и N для отмены", 0xFF008B8B)
 			lua_thread.create(function()
-				while true do wait(0) if isKeyDown(vkeys.VK_Y) then break end if isKeyDown(vkeys.VK_N) then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Предложение отклонено.", 0xFF008B8B) return end end
+				while true do wait(0) if isKeyDown(vkeys.VK_Y) then break end if isKeyDown(vkeys.VK_N) then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Предложение отклонено.", 0xFF008B8B) return end end
 				local mynick = sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED)))
-				sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Удаление запущено...", 0xFF008B8B)
+				sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Удаление запущено...", 0xFF008B8B)
 				local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=dell&nick=' .. uvalnick .. '&mynick=' .. mynick .. '&password=' .. FirstPlatoonPassword_ini.CONFIG['PASSWORD'] .. '')
 				local re1 = regex.new("@@.@ Player was deleted @@..@.@") --
 				local re2 = regex.new("@@.@ No access @@..@.@") --
 				local names1 = re1:match(responsetext)
 				local names2 = re2:match(responsetext)
-				if names2 ~= nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sendtolog('НЕУДАЧНОЕ УДАЛЕНИЕ ' .. uvalnick .. '', getTime()) return end
+				if names2 ~= nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}У вас нету доступа, попробуйте /login [password]", 0xFF008B8B) sendtolog('НЕУДАЧНОЕ УДАЛЕНИЕ ' .. uvalnick .. '', getTime()) return end
 				sendtolog('УДАЛЕНИЕ ' .. soldier .. '', getTime())
 				if names1 ~= nil then
-					sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Боец " .. uvalnick .. " был удалён из таблицы взвода", 0xFF008B8B) else
-					sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Боец " .. uvalnick .. " уже не найден в таблице", 0xFF008B8B)
+					sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Боец " .. uvalnick .. " был удалён из таблицы взвода", 0xFF008B8B) else
+					sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Боец " .. uvalnick .. " уже не найден в таблице", 0xFF008B8B)
 					return
 				end
 			end)
@@ -555,15 +556,15 @@ function ev.onServerMessage(col, text)
 			if oldnick ~= sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED))) then
 				for k, v in ipairs(noffmembers) do
 					if oldnick == v then
-						sampAddChatMessage("{008B8B}[Взвод №1]: {fffafa}Обнаружена смена ника солдата " .. oldnick .. " >> " .. newnick .. "", 0xFF008B8B)
-						sampAddChatMessage("{008B8B}[Взвод №1]: {fffafa}Если хотите сменить ник в таблице. Нажмите Y для согласия и N для отмены", 0xFF008B8B)
+						sampAddChatMessage(u8"{008B8B}[Взвод №1]: {fffafa}Обнаружена смена ника солдата " .. oldnick .. " >> " .. newnick .. "", 0xFF008B8B)
+						sampAddChatMessage(u8"{008B8B}[Взвод №1]: {fffafa}Если хотите сменить ник в таблице. Нажмите Y для согласия и N для отмены", 0xFF008B8B)
 						lua_thread.create(function()
-							while true do wait(0) if isKeyDown(vkeys.VK_Y) then break end if isKeyDown(vkeys.VK_N) then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Предложение отклонено.", 0xFF008B8B) return end end
-							sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Изменение ника запущено...", 0xFF008B8B)
+							while true do wait(0) if isKeyDown(vkeys.VK_Y) then break end if isKeyDown(vkeys.VK_N) then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Предложение отклонено.", 0xFF008B8B) return end end
+							sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Изменение ника запущено...", 0xFF008B8B)
 							local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=changenick&oldnick=' .. oldnick .. '&newnick=' .. newnick .. '')
 							local re1 = regex.new("@@.@ Nick was changed @@..@.@") --
 							local names = re1:match(responsetext)
-							if names == nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Боец в таблице взвода не найден.", 0xFF008B8B) else sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Обновил ник в таблице взвода.", 0xFF008B8B)
+							if names == nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Боец в таблице взвода не найден.", 0xFF008B8B) else sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Обновил ник в таблице взвода.", 0xFF008B8B)
 								sendtolog('СМЕНА НИКА ' .. oldnick .. ' >> ' .. newnick.. '', getTime())
 								return
 							end
@@ -576,8 +577,8 @@ function ev.onServerMessage(col, text)
 			local newnick = text:match('Ваш новый ник %" (%a+_%a+) %"%. Укажите его в клиенте SA%-MP%, в поле %"Name%"')
 			if newnick ~= nil then
 				lua_thread.create(function()
-					sampAddChatMessage("{008B8B}[Взвод №1]: ВНИМАНИЕ! {FFFAFA}Обнаружена смена игрового ника.", 0xFF008B8B)
-					sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Скрипт начинает обновление ников в таблице. {008B8B}НЕ ВЫХОДИТЕ ИЗ ИГРЫ!!!", 0xFF008B8B)
+					sampAddChatMessage(u8"{008B8B}[Взвод №1]: ВНИМАНИЕ! {FFFAFA}Обнаружена смена игрового ника.", 0xFF008B8B)
+					sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Скрипт начинает обновление ников в таблице. {008B8B}НЕ ВЫХОДИТЕ ИЗ ИГРЫ!!!", 0xFF008B8B)
 					local A_Index = 0
 					while true do
 						if A_Index == 20 then break end
@@ -588,8 +589,8 @@ function ev.onServerMessage(col, text)
 							local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=changenick&oldnick=' .. oldnick .. '&newnick=' .. newnick .. '')
 							local re1 = regex.new("@@.@ Nick was changed @@..@.@") --
 							local names = re1:match(responsetext)
-							if names == nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Не удалось обновить ник в таблице взвода.", 0xFF008B8B) else sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Обновил ник в таблице взвода.", 0xFF008B8B) end 
-							sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Можно выходить из игры.", 0xFF008B8B)
+							if names == nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Не удалось обновить ник в таблице взвода.", 0xFF008B8B) else sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Обновил ник в таблице взвода.", 0xFF008B8B) end 
+							sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Можно выходить из игры.", 0xFF008B8B)
 							sendtolog('СМЕНА НИКА ' .. oldnick .. ' >> ' .. newnick.. '', getTime())
 							return 
 						end
@@ -787,7 +788,7 @@ function req(u)
 			return u8:decode(responsetext)
 		end
 		os.remove(file_path)
-		--sampAddChatMessage("{008B8B}[Взвод №1]: Неудача при выполнении запроса №" .. req_index .. ", повторяю попытку...", 0xFF008B8B)
+		--sampAddChatMessage(u8"{008B8B}[Взвод №1]: Неудача при выполнении запроса №" .. req_index .. ", повторяю попытку...", 0xFF008B8B)
 	end
 	return ""
 end
@@ -795,8 +796,8 @@ function checkupdate()
 	local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=checkupdate')
 	local re0 = regex.new("Version: (.*)\\; URL: (.*)\\; Info: (.*)@@.@") --
 	local ver, url, upd = re0:match(responsetext)
-	if ver == nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Не удалось получить информацию об обновлениях.", 0xFF008B8B) thisScript():unload() return end
-	if tonumber(ver) > V then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Обнаружена новая версия " .. ver .. ". Скрипт начнет обновление немедленно.", 0xFF008B8B) updatescr(url, ver, upd) end
+	if ver == nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Не удалось получить информацию об обновлениях.", 0xFF008B8B) thisScript():unload() return end
+	if tonumber(ver) > V then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Обнаружена новая версия " .. ver .. ". Скрипт начнет обновление немедленно.", 0xFF008B8B) updatescr(url, ver, upd) end
 end
 
 function updatescr(url, ver, upd)
@@ -805,7 +806,7 @@ function updatescr(url, ver, upd)
 		local responsetext = req('https://script.google.com/macros/s/AKfycbyYb974aMNm_UeaGF2ymbeQQuvkINagPd1Jows6OwSL8rr-KUaR/exec?do=checkupdate')
 		local re0 = regex.new("Version: (.*)\\; URL: (.*)\\; Info: (.*)@@.@") --
 		local ver, url, upd = re0:match(responsetext)
-		if ver == nil then sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}Не удалось получить информацию об обновлениях.", 0xFF008B8B) thisScript():unload() return  end
+		if ver == nil then sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}Не удалось получить информацию об обновлениях.", 0xFF008B8B) thisScript():unload() return  end
 		u = urll
 	end
 	u = u:gsub("\\", "")
@@ -817,8 +818,8 @@ function updatescr(url, ver, upd)
 	scr_new:write(responsetext)
 	scr_new:close()
 	
-	sampAddChatMessage("{008B8B}[Взвод №1]: Обновление завершено.", 0xFF008B8B)
-	sampAddChatMessage("{008B8B}[Взвод №1]: {FFFAFA}" .. upd .. "", 0xFF008B8B)
+	sampAddChatMessage(u8"{008B8B}[Взвод №1]: Обновление завершено.", 0xFF008B8B)
+	sampAddChatMessage(u8"{008B8B}[Взвод №1]: {FFFAFA}" .. upd .. "", 0xFF008B8B)
 	updating = true 
 	
 	script.load("moonloader\1stPlatoon.lua") 
