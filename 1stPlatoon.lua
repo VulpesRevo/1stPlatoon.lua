@@ -784,7 +784,30 @@ function req(u)
 			io.close(responsefile)
 			os.remove(file_path)
 			freereq = true
-			return u8:decode(responsetext)
+		return u8:decode(responsetext)
+		end
+		os.remove(file_path)
+		--sampAddChatMessage("{008B8B}[Взвод №1]: Неудача при выполнении запроса №" .. req_index .. ", повторяю попытку...", 0xFF008B8B)
+	end
+	return ""
+end
+function upreq(u)
+	while not freereq do wait(0) end
+	freereq = false
+	req_index = req_index + 1
+	local url = u
+	local file_path = getWorkingDirectory() .. '/resource/downloads/' .. tostring(req_index) .. '.dat'
+	while true do
+		sysdownloadcomplete = false
+		download_id = downloadUrlToFile(url, file_path, download_handler)
+		while not sysdownloadcomplete do wait(0) end
+		local responsefile = io.open(file_path, "r")
+		if responsefile ~= nil then
+			local responsetext = responsefile:read("*a")
+			io.close(responsefile)
+			os.remove(file_path)
+			freereq = true
+		return responsetext
 		end
 		os.remove(file_path)
 		--sampAddChatMessage("{008B8B}[Взвод №1]: Неудача при выполнении запроса №" .. req_index .. ", повторяю попытку...", 0xFF008B8B)
@@ -810,7 +833,7 @@ function updatescr(url, ver, upd)
 	end
 	u = u:gsub("\\", "")
 	local file_path = getWorkingDirectory() .. '/1stPlatoon.lua'
-	local responsetext = u8:decode(req(u))
+	local responsetext = upreq(u)
 	os.remove(file_path)
 	
 	local scr_new = io.open(file_path, "a")
